@@ -1,1 +1,22 @@
+/* src/styles/security-theme.css */
 
+/* 1. クリックジャッキング防止の補助：
+   万が一、他サイトのiframe内に埋め込まれた場合に要素を非表示にする（JSと併用） */
+html.is-framed body {
+  display: none !important;
+}
+
+/* 2. 入力フォームの安全なデザイン：
+   パスワード入力や認証情報入力時に、ブラウザの自動補完や警告が見やすくなるよう十分なコントラストを確保 */
+input[type="password"] {
+  letter-spacing: 0.3em; /* 覗き見防止（気休めですが、ドットの間隔を広げる） */
+}
+
+/* 3. スキーマインジェクションや不審なコンテンツの埋め込み防止：
+   ユーザー生成コンテンツ(UGC)を表示するエリアで、予期せぬ挙動を防ぐ */
+.user-generated-content {
+  pointer-events: auto;
+  user-select: text;
+  /* 悪意ある巨大な透過要素による画面全体のクリック乗っ取りを防ぐ */
+  overflow: hidden; 
+}
