@@ -1,1 +1,40 @@
+-- 例: 20260916_create_users_table.sql
+-- テーブル作成
+create table profiles (
+  id uuid references auth.users not null primary key,
+  username text
+);
+
+-- RLSの有効化（これを忘れると誰でも読み書きできてしまう）
+alter table profiles enable row level security;
+
+-- データの閲覧ポリシー（認証されたユーザー自身のみ閲覧可能にする）
+create policy "Users can view their own profile."
+  on profiles for select
+  using ( auth.uid() = id );
+コードは注意してご使用ください。4. vercel.json （ブラウザ側セキュリティの強化）Vercelから配信されるアプリにセキュリティヘッダーを付与し、XSS（クロスサイトスクリプティング）やクリックジャッキングなどの脆弱性から守ります。json{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co;"
+        }
+      ]
+    }
+  ]
+}
 
